@@ -1,0 +1,28 @@
+name: Sync to Control Plus A Repo
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout personal repo
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Push to company dev branch
+        env:
+          GH_TOKEN: ${{ secrets.COMPANY_REPO_TOKEN }}
+        run: |
+          git config user.name "ControlPlusA Sync Bot"
+          git config user.email "syncbot@controlplusa.com"
+          git remote add company https://$GH_TOKEN@github.com/controlplusacompany/control-a-website.git
+          git push company HEAD:dev
