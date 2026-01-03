@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
-import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/Navbar';
 import { Card } from './components/Card';
 import { PulseBeams } from './components/ui/pulse-beams';
@@ -10,14 +10,10 @@ import { BookingPage } from './components/BookingPage';
 import { 
   KeycapIcon, 
   BrandLogo,
-  BookingKeycap, 
   DashboardKeycap, 
   AutomationKeycap, 
   ArrowKeycap,
-  AuditKeycap,
-  ERPKeycap,
-  OpsKeycap,
-  PredictabilityKeycap
+  OpsKeycap
 } from './components/Icons';
 
 // --- Visual Components for Reliability Section ---
@@ -45,7 +41,6 @@ const ChaoticToolsVisual = () => (
           transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           className="relative"
         >
-          {/* Stacked "Tools" representing the messy reality */}
           <div className="w-24 h-24 bg-white border border-brand-border rounded-[28%] shadow-sm opacity-60 transform -rotate-12 translate-x-6 translate-y-3" />
           <div className="absolute top-0 left-0 w-24 h-24 bg-white border border-brand-border rounded-[28%] shadow-sm opacity-40 transform rotate-[35deg] -translate-x-6 -translate-y-3" />
           <div className="absolute top-4 left-4 w-20 h-20 bg-white border border-brand-border rounded-[28%] shadow-xl flex items-center justify-center">
@@ -60,7 +55,6 @@ const ChaoticToolsVisual = () => (
 const ReliableSystemVisual = () => (
   <div className="relative w-full h-full flex items-center justify-center">
     <div className="relative flex items-center gap-4">
-      {/* Precision Node Network */}
       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-4 h-4 rounded-full bg-brand-heading" />
       <motion.div 
         initial={{ width: 0 }} 
@@ -91,7 +85,7 @@ const ReliableSystemVisual = () => (
   </div>
 );
 
-// --- Visual Components for Capabilities Carousel ---
+// --- Capability Visuals ---
 
 const ClockVisual = () => (
   <div className="relative w-24 h-24 rounded-full border-[6px] border-brand-heading flex items-center justify-center">
@@ -168,7 +162,7 @@ const AppWindowVisual = () => (
     </div>
 );
 
-// --- Visual Components for Process Steps (Updated: Removed Numbers) ---
+// --- Process Visuals ---
 
 const ProcessVisual1 = () => (
   <div className="relative w-28 h-28 flex items-center justify-center">
@@ -222,9 +216,43 @@ const ProcessVisual4 = () => (
   </div>
 );
 
+// --- Animated Process Card Component ---
+const AnimatedProcessCard = ({ step, index }: { step: any, index: number }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: cardScroll } = useScroll({
+    target: cardRef,
+    offset: ["start end", "center center", "end start"]
+  });
+
+  const rotateX = useTransform(cardScroll, [0, 0.5, 1], [40, 0, -40]);
+  const opacity = useTransform(cardScroll, [0, 0.2, 0.5, 0.8, 1], [0, 1, 1, 1, 0]);
+  const scale = useTransform(cardScroll, [0, 0.5, 1], [0.8, 1, 0.8]);
+
+  return (
+    <motion.div 
+      ref={cardRef}
+      style={{ 
+        rotateX, 
+        opacity,
+        scale,
+        perspective: "1000px" 
+      }}
+      className="flex flex-col justify-between h-[400px] rounded-[40px] p-8 transition-all duration-300 bg-brand-bg border border-brand-border shadow-elevation relative overflow-hidden"
+    >
+       <span className="text-[13px] font-black tracking-widest text-brand-blue/60 mb-4">{step.id}</span>
+       <div className="flex-1 flex items-center justify-center">{step.visual}</div>
+       <div className="space-y-2">
+          <h4 className="text-xl font-bold tracking-tight text-brand-heading">{step.title}</h4>
+          <p className="text-[14px] leading-relaxed font-medium text-brand-body">
+            {step.text}
+          </p>
+       </div>
+    </motion.div>
+  );
+};
+
 const App: React.FC = () => {
   const [view, setView] = useState<'home' | 'booking'>('home');
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const { scrollYProgress } = useScroll();
   
   const scaleX = useSpring(scrollYProgress, {
@@ -232,17 +260,6 @@ const App: React.FC = () => {
     damping: 30,
     restDelta: 0.001
   });
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ 
-        x: (e.clientX / window.innerWidth) - 0.5, 
-        y: (e.clientY / window.innerHeight) - 0.5 
-      });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   const fadeIn = {
     initial: { opacity: 0, y: 30 },
@@ -319,37 +336,28 @@ const App: React.FC = () => {
 
   const beams = [
     {
-      path: "M269 220.5H16.5C10.9772 220.5 6.5 224.977 6.5 230.5V398.5",
+      path: "M10 220H300C310 220 320 210 320 200V10",
       gradientConfig: {
         initial: { x1: "0%", x2: "0%", y1: "80%", y2: "100%" },
         animate: { x1: ["0%", "0%", "200%"], x2: ["0%", "0%", "180%"], y1: ["80%", "0%", "0%"], y2: ["100%", "20%", "20%"] },
-        transition: { duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 2, delay: Math.random() * 2 },
+        transition: { duration: 3, repeat: Infinity, ease: "linear", repeatDelay: 1, delay: 0 },
       },
-      connectionPoints: [{ cx: 6.5, cy: 398.5, r: 6 }, { cx: 269, cy: 220.5, r: 6 }]
+      connectionPoints: [{ cx: 10, cy: 220, r: 8 }, { cx: 320, cy: 10, r: 8 }]
     },
     {
-      path: "M568 200H841C846.523 200 851 195.523 851 190V40",
+      path: "M848 220H558C548 220 538 230 538 240V420",
       gradientConfig: {
         initial: { x1: "0%", x2: "0%", y1: "80%", y2: "100%" },
         animate: { x1: ["20%", "100%", "100%"], x2: ["0%", "90%", "90%"], y1: ["80%", "80%", "-20%"], y2: ["100%", "100%", "0%"] },
-        transition: { duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 2, delay: Math.random() * 2 },
+        transition: { duration: 3, repeat: Infinity, ease: "linear", repeatDelay: 1, delay: 1.5 },
       },
-      connectionPoints: [{ cx: 851, cy: 34, r: 6.5 }, { cx: 568, cy: 200, r: 6 }]
-    },
-    {
-      path: "M380 168V17C380 11.4772 384.477 7 390 7H414",
-      gradientConfig: {
-        initial: { x1: "-40%", x2: "-10%", y1: "0%", y2: "20%" },
-        animate: { x1: ["40%", "0%", "0%"], x2: ["10%", "0%", "0%"], y1: ["0%", "0%", "180%"], y2: ["20%", "20%", "200%"] },
-        transition: { duration: 2, repeat: Infinity, ease: "linear", repeatDelay: 2, delay: Math.random() * 2 },
-      },
-      connectionPoints: [{ cx: 420.5, cy: 6.5, r: 6 }, { cx: 380, cy: 168, r: 6 }]
+      connectionPoints: [{ cx: 848, cy: 220, r: 8 }, { cx: 538, cy: 420, r: 8 }]
     }
   ];
 
   const gradientColors = {
     start: "#0259DD",
-    middle: "#0259DD",
+    middle: "#3B82F6",
     end: "#F8F9FA"
   };
 
@@ -364,10 +372,21 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-brand-bg selection:bg-brand-green selection:text-white overflow-x-hidden">
       <SpotlightCursor />
       
-      {/* Scroll Progress */}
-      {view === 'home' && (
-        <motion.div className="fixed top-0 left-0 right-0 h-[6px] bg-brand-green z-[60] origin-left shadow-[0_2px_10px_rgba(2,89,221,0.5)]" style={{ scaleX }} />
-      )}
+      <AnimatePresence>
+        {view === 'home' && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed top-0 left-0 right-0 h-[6px] z-[9999] shadow-[0_2px_10px_rgba(2,89,221,0.5)]" 
+            style={{ 
+              scaleX: scaleX, 
+              originX: 0,
+              background: 'linear-gradient(90deg, #0259DD 0%, #3B82F6 100%)'
+            }} 
+          />
+        )}
+      </AnimatePresence>
       
       <Navbar onBookCall={() => setView('booking')} />
 
@@ -375,7 +394,7 @@ const App: React.FC = () => {
         {view === 'home' ? (
           <motion.div key="home" {...pageTransition} className="pt-24 space-y-12 pb-24">
             
-            {/* SECTION 1: HERO - BRAND BLUE CARD */}
+            {/* HERO */}
             <section className="px-6 md:px-12 relative overflow-hidden">
               <div className="max-w-7xl mx-auto w-full relative z-20">
                 <motion.div 
@@ -385,10 +404,15 @@ const App: React.FC = () => {
                   className="card-3d-green rounded-[64px] p-10 md:p-32 text-center relative shadow-3xl group min-h-[80vh] flex flex-col justify-center"
                 >
                   <div className="flex flex-col items-center">
-                    <motion.h1 
-                      {...fadeIn}
-                      className="text-5xl md:text-[90px] font-bold text-white tracking-tighter leading-[0.9] mb-12 max-w-6xl mx-auto"
+                    {/* Brand Badge Placeholder from Screenshot Instruction */}
+                    <motion.div 
+                      {...fadeIn} 
+                      className="mb-10 bg-white/10 backdrop-blur-md px-8 py-4 rounded-3xl border border-white/20 shadow-xl"
                     >
+                      <BrandLogo size={42} className="brightness-[1.2]" />
+                    </motion.div>
+
+                    <motion.h1 {...fadeIn} className="text-5xl md:text-[90px] font-bold text-white tracking-tighter leading-[0.9] mb-12 max-w-6xl mx-auto">
                       You run a business. <br/>
                       <span className="opacity-80 mt-4 block">We make it run better.</span>
                     </motion.h1>
@@ -418,17 +442,14 @@ const App: React.FC = () => {
               </div>
             </section>
 
-            {/* SECTION 2: PROBLEM AWARENESS - WHITE CARD */}
+            {/* PROBLEM AWARENESS */}
             <section id="problem" className="px-6 md:px-12">
               <div className="max-w-7xl mx-auto w-full">
                 <motion.div {...fadeIn} className="card-3d-white rounded-[64px] p-12 md:p-24 text-center">
-                  <div className="mb-16">
-                    <h2 className="text-4xl md:text-6xl font-bold text-brand-heading tracking-tight mb-8">
-                      Does this sound familiar?
-                    </h2>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-1 gap-6 text-left max-w-2xl mx-auto">
+                  <h2 className="text-4xl md:text-6xl font-bold text-brand-heading tracking-tight mb-16">
+                    Does this sound familiar?
+                  </h2>
+                  <div className="grid grid-cols-1 gap-6 text-left max-w-2xl mx-auto">
                     {[
                       "You chase updates more than you want to",
                       "Tasks slip when someone forgets",
@@ -436,107 +457,67 @@ const App: React.FC = () => {
                       "You feel busy but progress feels slow",
                       "You know systems could help but don't know where to start"
                     ].map((text, i) => (
-                      <motion.div 
-                        key={i}
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="flex items-center gap-6 p-6 rounded-3xl hover:bg-brand-bg transition-colors border border-transparent hover:border-brand-border"
-                      >
+                      <div key={i} className="flex items-center gap-6 p-6 rounded-3xl bg-brand-bg/50 border border-brand-border">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-500">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M18 6L6 18M6 6l12 12"/></svg>
                         </div>
                         <span className="text-xl md:text-2xl font-bold text-brand-heading">{text}</span>
-                      </motion.div>
+                      </div>
                     ))}
                   </div>
-
-                  <motion.p {...fadeIn} className="mt-16 text-xl text-brand-muted font-medium">
+                  <p className="mt-16 text-xl text-brand-muted font-medium">
                     This is not a people problem. <br/>
                     <span className="text-brand-heading font-bold">It is a systems problem.</span>
-                  </motion.p>
+                  </p>
                 </motion.div>
               </div>
             </section>
 
-            {/* SECTION 3: WHAT WE DO - WHITE CARD */}
+            {/* WHAT WE DO */}
             <section id="what-we-do" className="px-6 md:px-12">
               <div className="max-w-7xl mx-auto w-full">
                 <motion.div {...fadeIn} className="card-3d-white rounded-[64px] p-12 md:p-24">
-                  <div className="mb-24 md:text-center">
-                    <h2 className="text-5xl md:text-7xl font-bold text-brand-heading tracking-tighter mb-8 leading-none">
-                      What Control + A actually does
-                    </h2>
-                    <p className="text-xl text-brand-body max-w-3xl mx-auto leading-relaxed font-medium">
-                      We help businesses run smoothly by designing systems behind the scenes.
-                      We don't sell tools. We design systems that actually get used.
-                    </p>
-                  </div>
-
+                  <h2 className="text-5xl md:text-7xl font-bold text-brand-heading tracking-tighter mb-24 md:text-center leading-none">
+                    What Control + A actually does
+                  </h2>
+                  <p className="text-xl text-brand-body max-w-3xl mx-auto leading-relaxed font-medium mb-12 md:text-center">
+                    We help businesses run smoothly by designing systems behind the scenes.
+                    We don't sell tools. We design systems that actually get used.
+                  </p>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <Card 
-                      variant="default"
-                      title="Automations"
-                      description="We build workflows that remove repetitive work, so your team can focus on what matters."
-                      icon={<AutomationKeycap />}
-                    />
-                    <Card 
-                      variant="default"
-                      title="Visibility"
-                      description="Dashboards that show you exactly what is going on in your business without chasing people for updates."
-                      icon={<DashboardKeycap />}
-                    />
-                    <Card 
-                      variant="default"
-                      title="Internal Tools"
-                      description="Custom software and AI agents when off-the-shelf tools aren't enough to handle your specific needs."
-                      icon={<OpsKeycap />}
-                    />
+                    <Card variant="default" title="Automations" description="We build workflows that remove repetitive work, so your team can focus on what matters." icon={<AutomationKeycap />} />
+                    <Card variant="default" title="Visibility" description="Dashboards that show you exactly what is going on in your business without chasing people for updates." icon={<DashboardKeycap />} />
+                    <Card variant="default" title="Internal Tools" description="Custom software and AI agents when off-the-shelf tools aren't enough to handle your specific needs." icon={<OpsKeycap />} />
                   </div>
                 </motion.div>
               </div>
             </section>
 
-            {/* SECTION: RELIABILITY VS TOOLS - BRAND BLUE CARD (Modular High Contrast) */}
+            {/* RELIABILITY VS TOOLS */}
             <section className="px-6 md:px-12">
               <div className="max-w-7xl mx-auto w-full">
                 <motion.div {...fadeIn} className="card-3d-green rounded-[64px] p-12 md:p-24 text-center">
-                  <div className="mb-20">
-                    <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter mb-8 leading-[0.9]">
-                      The problem isn't tools.<br/><span className="opacity-60">It's reliability.</span>
-                    </h2>
-                    <p className="text-white/80 text-xl text-brand-bg/80 max-w-3xl mx-auto leading-relaxed font-medium mb-12">
-                      Most businesses don't need more software. They need fewer decisions, fewer hand-offs, and fewer things that rely on memory.
-                    </p>
-                    <div className="inline-block px-8 py-4 bg-white/10 rounded-full border border-white/20 backdrop-blur-md">
-                        <p className="text-2xl font-black text-white tracking-tight">
-                            Automation isn't the goal. Predictability is.
-                        </p>
+                  <h2 className="text-5xl md:text-7xl font-bold text-white tracking-tighter mb-8 leading-[0.9]">
+                    The problem isn't tools.<br/><span className="opacity-60">It's reliability.</span>
+                  </h2>
+                  <p className="text-white/80 text-xl max-w-3xl mx-auto leading-relaxed font-medium mb-12">
+                    Most businesses don't need more software. They need fewer decisions, fewer hand-offs, and fewer things that rely on memory.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mt-20">
+                    <div className="flex flex-col items-center bg-white/5 rounded-[48px] p-10 border border-white/10 shadow-inner">
+                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 mb-12">Chaos</span>
+                      <div className="h-64 w-full"><ChaoticToolsVisual /></div>
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                    <div className="flex flex-col items-center bg-white/5 rounded-[48px] p-10 border border-white/10 backdrop-blur-sm shadow-inner">
-                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 mb-12">More Tools (Chaos)</span>
-                      <div className="h-64 w-full">
-                         <ChaoticToolsVisual />
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-col items-center bg-white rounded-[48px] p-10 shadow-elevation border border-white relative overflow-hidden">
-                       {/* Glossy overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-tr from-brand-blue/5 to-transparent pointer-events-none" />
-                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-blue mb-12 relative z-10">Reliable System (Precision)</span>
-                      <div className="h-64 w-full relative z-10">
-                         <ReliableSystemVisual />
-                      </div>
+                    <div className="flex flex-col items-center bg-white rounded-[48px] p-10 shadow-elevation relative overflow-hidden">
+                      <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand-blue mb-12 relative z-10">Precision</span>
+                      <div className="h-64 w-full relative z-10"><ReliableSystemVisual /></div>
                     </div>
                   </div>
                 </motion.div>
               </div>
             </section>
 
-            {/* SECTION 4: DIFFERENTIATION - WHITE CARD */}
+            {/* DIFFERENTIATION */}
             <section className="px-6 md:px-12">
               <div className="max-w-7xl mx-auto w-full">
                 <motion.div {...fadeIn} className="card-3d-white rounded-[64px] p-12 md:p-24">
@@ -556,12 +537,8 @@ const App: React.FC = () => {
                           <li>Remove unnecessary steps</li>
                           <li>Automate only what makes sense</li>
                         </ul>
-                        <p className="pt-4 font-bold text-brand-heading text-2xl">
-                          No overengineering. No unnecessary tools. <br/>Just systems that work quietly.
-                        </p>
                       </div>
                     </div>
-                    
                     <div className="flex-1 w-full flex justify-center">
                        <div className="bg-brand-bg rounded-[56px] p-12 border border-brand-border rotate-3 shadow-2xl max-w-md w-full">
                          <div className="flex items-center gap-6 mb-8 pb-8 border-b border-brand-border">
@@ -583,15 +560,12 @@ const App: React.FC = () => {
               </div>
             </section>
 
-            {/* SECTION 5: CAPABILITIES - WHITE CARD */}
+            {/* CAPABILITIES */}
             <section className="px-6 md:px-12">
               <div className="max-w-7xl mx-auto w-full">
                 <motion.div {...fadeIn} className="card-3d-white rounded-[64px] p-12 md:p-24 overflow-hidden">
-                  <div className="mb-20 text-center">
-                     <h3 className="text-3xl md:text-6xl font-bold text-brand-heading mb-6 tracking-tight">What we usually build</h3>
-                     <p className="text-brand-muted text-lg md:text-xl max-w-2xl mx-auto font-medium">Specific systems for specific problems.</p>
-                  </div>
-                  
+                  <h3 className="text-3xl md:text-6xl font-bold text-brand-heading mb-6 tracking-tight text-center">What we usually build</h3>
+                  <p className="text-brand-muted text-lg md:text-xl max-w-2xl mx-auto font-medium text-center mb-16">Specific systems for specific problems.</p>
                   <div className="flex overflow-x-auto pb-8 gap-8 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
                     {capabilities.map((cap, i) => (
                       <div 
@@ -601,14 +575,10 @@ const App: React.FC = () => {
                           ${cap.theme === 'dark' ? 'bg-[#111111] text-white shadow-2xl' : 'bg-brand-bg text-brand-heading border border-brand-border'}
                         `}
                       >
-                         <div className="flex-1 flex items-center justify-center">
-                            {cap.visual}
-                         </div>
+                         <div className="flex-1 flex items-center justify-center">{cap.visual}</div>
                          <div className="space-y-3">
                             <h4 className="text-xl font-bold tracking-tight">{cap.title}</h4>
-                            <p className={`text-[14px] leading-relaxed font-medium ${cap.theme === 'dark' ? 'text-white/60' : 'text-brand-muted'}`}>
-                              {cap.description}
-                            </p>
+                            <p className={`text-[14px] leading-relaxed font-medium ${cap.theme === 'dark' ? 'text-white/60' : 'text-brand-muted'}`}>{cap.description}</p>
                          </div>
                       </div>
                     ))}
@@ -617,21 +587,15 @@ const App: React.FC = () => {
               </div>
             </section>
 
-            {/* SECTION 6: OUTCOMES - WHITE CARD */}
+            {/* OUTCOMES */}
             <section className="px-6 md:px-12">
               <div className="max-w-7xl mx-auto w-full">
                 <motion.div {...fadeIn} className="card-3d-white rounded-[64px] p-4 overflow-hidden">
-                  <PulseBeams 
-                    beams={beams} 
-                    gradientColors={gradientColors} 
-                    className="rounded-[60px] min-h-[600px] bg-white"
-                  >
+                  <PulseBeams beams={beams} gradientColors={gradientColors} className="rounded-[60px] min-h-[600px] bg-white">
                     <div className="flex flex-col lg:flex-row gap-20 items-center px-12 py-16 relative z-20">
-                      <div className="flex-1 space-y-12">
+                      <div className="flex-1 space-y-12 bg-white/40 backdrop-blur-sm p-8 rounded-[48px] border border-white/60">
                         <span className="text-brand-blue font-black tracking-[0.4em] uppercase text-[11px] bg-brand-blue/5 px-6 py-3 rounded-full inline-block border border-brand-blue/10">Engineered Results</span>
-                        <h3 className="text-5xl md:text-7xl font-bold text-brand-heading leading-[0.9] tracking-tighter">
-                          How your business feels after
-                        </h3>
+                        <h3 className="text-5xl md:text-7xl font-bold text-brand-heading leading-[0.9] tracking-tighter">How your business feels after</h3>
                         <div className="space-y-6">
                           {[
                             "Work gets done without reminders",
@@ -640,25 +604,15 @@ const App: React.FC = () => {
                             "Your team knows what to do",
                             "You get time back to focus on growth"
                           ].map((text, i) => (
-                            <motion.div 
-                              key={i} 
-                              className="flex items-center gap-6 text-lg font-bold text-brand-body"
-                            >
+                            <div key={i} className="flex items-center gap-6 text-lg font-bold text-brand-body">
                               <div className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-blue/10 flex items-center justify-center">
                                 <div className="w-2 h-2 rounded-full bg-brand-blue" />
                               </div>
                               {text}
-                            </motion.div>
+                            </div>
                           ))}
                           <p className="text-2xl font-black text-brand-heading pt-4">Calm. Predictable. Reliable.</p>
                         </div>
-                      </div>
-                      
-                      <div className="flex-1 w-full hidden lg:flex justify-center items-center">
-                         <div className="bg-white p-12 rounded-[56px] shadow-elevation border border-brand-border text-center">
-                            <KeycapIcon label="OK" size={100} blueDepth={true} />
-                            <div className="mt-8 font-black text-brand-heading text-xl uppercase tracking-widest opacity-40">System Healthy</div>
-                         </div>
                       </div>
                     </div>
                   </PulseBeams>
@@ -666,45 +620,21 @@ const App: React.FC = () => {
               </div>
             </section>
 
-            {/* SECTION 7: PROCESS - WHITE CARD */}
+            {/* ANIMATED PROCESS SECTION */}
             <section id="process" className="px-6 md:px-12">
               <div className="max-w-7xl mx-auto w-full">
                 <motion.div {...fadeIn} className="card-3d-white rounded-[64px] p-12 md:p-24 overflow-hidden">
-                  <div className="mb-20 text-center">
-                     <h2 className="text-5xl md:text-7xl font-bold text-brand-heading tracking-tighter mb-8 leading-none">
-                      How we work with you
-                     </h2>
-                     <p className="text-xl text-brand-muted font-bold tracking-tight">Clear inputs. Clear outputs.</p>
-                  </div>
-                  
+                  <h2 className="text-5xl md:text-7xl font-bold text-brand-heading tracking-tighter mb-20 text-center">How we work with you</h2>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {deploySteps.map((step, i) => (
-                      <div 
-                        key={i}
-                        className="flex flex-col justify-between h-[400px] rounded-[40px] p-8 transition-all duration-300 hover:-translate-y-2 bg-brand-bg border border-brand-border shadow-elevation relative overflow-hidden"
-                      >
-                         <div className="absolute top-6 left-8 flex items-center gap-2">
-                           <div className="w-8 h-[1px] bg-brand-blue/30" />
-                           <span className="text-[13px] font-black tracking-widest text-brand-blue/60">{step.id}</span>
-                         </div>
-
-                         <div className="flex-1 flex items-center justify-center pt-8 pb-4">
-                            {step.visual}
-                         </div>
-                         <div className="space-y-2">
-                            <h4 className="text-xl font-bold tracking-tight text-brand-heading">{step.title}</h4>
-                            <p className="text-[14px] leading-relaxed font-medium text-brand-body">
-                              {step.text}
-                            </p>
-                         </div>
-                      </div>
+                      <AnimatedProcessCard key={step.id} step={step} index={i} />
                     ))}
                   </div>
                 </motion.div>
               </div>
             </section>
 
-            {/* SECTION 8: QUALIFICATION - CHARCOAL CARD */}
+            {/* QUALIFICATION */}
             <section className="px-6 md:px-12">
               <div className="max-w-7xl mx-auto w-full">
                 <motion.div {...fadeIn} className="card-3d-black rounded-[64px] p-12 md:p-32">
@@ -712,34 +642,20 @@ const App: React.FC = () => {
                      <div className="space-y-12">
                         <h3 className="text-4xl font-bold text-white tracking-tight">This is a good fit if</h3>
                         <ul className="space-y-8">
-                           {[
-                             "You run or manage a business",
-                             "Things work but feel messy",
-                             "You want fewer manual tasks",
-                             "You care about reliability over hype"
-                           ].map((item, i) => (
+                           {["You run or manage a business", "Things work but feel messy", "You want fewer manual tasks", "You care about reliability over hype"].map((item, i) => (
                              <li key={i} className="flex items-center gap-6 text-xl md:text-2xl font-bold text-white/90">
-                                <div className="w-10 h-10 rounded-full bg-brand-blue flex items-center justify-center text-white shrink-0 shadow-keycap">
-                                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                </div>
+                                <div className="w-10 h-10 rounded-full bg-brand-blue flex items-center justify-center shadow-keycap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                                 {item}
                              </li>
                            ))}
                         </ul>
                      </div>
-
                      <div className="space-y-12 opacity-50">
                         <h3 className="text-4xl font-bold text-white tracking-tight">Not a fit if</h3>
                         <ul className="space-y-8">
-                           {[
-                             "You want shortcuts without structure",
-                             "You want buzzwords instead of outcomes",
-                             "You prefer quick hacks over long-term systems"
-                           ].map((item, i) => (
+                           {["You want shortcuts without structure", "You want buzzwords instead of outcomes", "You prefer quick hacks over long-term systems"].map((item, i) => (
                              <li key={i} className="flex items-center gap-6 text-xl md:text-2xl font-bold text-white/90">
-                                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0">
-                                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </div>
+                                <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
                                 {item}
                              </li>
                            ))}
@@ -750,33 +666,24 @@ const App: React.FC = () => {
               </div>
             </section>
 
-            {/* SECTION 9: SOCIAL PROOF - WHITE CARD */}
+            {/* SOCIAL PROOF */}
             <section className="px-6 md:px-12">
               <div className="max-w-7xl mx-auto w-full">
                 <motion.div {...fadeIn} className="card-3d-white rounded-[64px] p-12 md:p-32 text-center">
                    <h2 className="text-brand-muted font-bold tracking-[0.4em] uppercase text-[11px] mb-20 opacity-60">Validation</h2>
                    <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-                      <div className="space-y-6">
-                         <p className="text-2xl md:text-3xl font-black text-brand-heading leading-tight italic tracking-tighter">"It feels like someone finally organized everything."</p>
-                      </div>
-                      <div className="space-y-6">
-                         <p className="text-2xl md:text-3xl font-black text-brand-heading leading-tight italic tracking-tighter">"Work just happens now."</p>
-                      </div>
-                      <div className="space-y-6">
-                         <p className="text-2xl md:text-3xl font-black text-brand-heading leading-tight italic tracking-tighter">"I know what is going on without asking."</p>
-                      </div>
+                      <p className="text-2xl md:text-3xl font-black text-brand-heading leading-tight italic tracking-tighter">"It feels like someone finally organized everything."</p>
+                      <p className="text-2xl md:text-3xl font-black text-brand-heading leading-tight italic tracking-tighter">"Work just happens now."</p>
+                      <p className="text-2xl md:text-3xl font-black text-brand-heading leading-tight italic tracking-tighter">"I know what is going on without asking."</p>
                    </div>
                 </motion.div>
               </div>
             </section>
 
-            {/* SECTION 10: FINAL CTA - BRAND BLUE CARD */}
+            {/* FINAL CTA */}
             <section className="px-6 md:px-12">
               <div className="max-w-7xl mx-auto w-full">
-                <motion.div 
-                  {...fadeIn}
-                  className="card-3d-green rounded-[64px] p-12 md:p-32 text-center relative overflow-hidden"
-                >
+                <motion.div {...fadeIn} className="card-3d-green rounded-[64px] p-12 md:p-32 text-center relative overflow-hidden">
                   <div className="relative z-10 flex flex-col items-center">
                     <h2 className="text-5xl md:text-8xl font-bold text-white mb-12 tracking-tighter leading-[0.9]">
                       Let us bring clarity to <br/>how your business runs.
@@ -784,35 +691,49 @@ const App: React.FC = () => {
                     <p className="text-white/80 text-xl md:text-3xl max-w-2xl mx-auto mb-16 leading-relaxed font-medium">
                       Book a short call and we will walk through what is slowing you down and where systems can help.
                     </p>
-                    
-                    <div className="flex flex-col items-center gap-8">
-                       <ShimmerButton 
-                        onClick={() => setView('booking')}
-                        background="#0259DD"
-                        className="h-[72px] px-16 rounded-full font-bold text-xl flex items-center gap-4 border border-white/30 shadow-2xl"
-                      >
-                        Book a clarity call
-                        <ArrowKeycap size={24} />
-                      </ShimmerButton>
-                      <div className="text-white/40 font-black text-[11px] uppercase tracking-[0.4em]">
-                        Free 30 minutes. No pitch. Just clarity.
-                      </div>
-                    </div>
+                    <ShimmerButton 
+                      onClick={() => setView('booking')}
+                      background="#0259DD"
+                      className="h-[72px] px-16 rounded-full font-bold text-xl flex items-center gap-4 border border-white/30 shadow-2xl"
+                    >
+                      Book a clarity call
+                      <ArrowKeycap size={24} />
+                    </ShimmerButton>
+                    <div className="text-white/40 font-black text-[11px] uppercase tracking-[0.4em] mt-8">Free 30 minutes. No pitch. Just clarity.</div>
                   </div>
                 </motion.div>
               </div>
             </section>
 
-            {/* Footer */}
-            <footer className="py-20 px-6 md:px-12 flex flex-col justify-center">
-              <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-center gap-10">
-                <div className="flex items-center space-x-4 opacity-50">
-                  <BrandLogo size={40} />
-                  <div className="flex flex-col justify-center">
-                    <span className="text-sm text-brand-muted font-bold uppercase tracking-widest">Engineered Clarity</span>
+            {/* REFINED FOOTER */}
+            <footer className="py-24 px-6 md:px-12 bg-white/50 border-t border-brand-border/40">
+              <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start gap-12">
+                {/* Left Column */}
+                <div className="flex flex-col items-start gap-4">
+                  <div className="flex items-center space-x-4 opacity-80">
+                    <BrandLogo size={36} />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-muted pt-1">Engineered Clarity</span>
                   </div>
+                  <p className="text-brand-muted/40 font-bold text-[10px] uppercase tracking-[0.3em] pl-1">© 2024 Control + A Systems Design</p>
                 </div>
-                <p className="text-brand-muted/30 font-bold text-[11px] uppercase tracking-[0.4em]">© 2024 Control + A Systems Design</p>
+
+                {/* Right Column: About Us / Contact */}
+                <div className="flex flex-col md:flex-row gap-12 md:gap-24">
+                   <div className="space-y-4">
+                      <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-brand-heading">Contact</h4>
+                      <div className="flex flex-col gap-2 text-[13px] font-bold text-brand-muted">
+                         <a href="mailto:hello@controla.agency" className="hover:text-brand-blue transition-colors">hello@controla.agency</a>
+                         <span>+1 (555) 123-4567</span>
+                      </div>
+                   </div>
+                   <div className="space-y-4">
+                      <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-brand-heading">Location</h4>
+                      <div className="flex flex-col gap-2 text-[13px] font-bold text-brand-muted">
+                         <span>123 Systems Lane</span>
+                         <span>Tech Valley, CA 94043</span>
+                      </div>
+                   </div>
+                </div>
               </div>
             </footer>
           </motion.div>

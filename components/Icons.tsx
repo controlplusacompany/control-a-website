@@ -57,34 +57,40 @@ export const KeycapIcon: React.FC<KeycapProps> = ({
   );
 };
 
-export const BrandLogo = ({ size = 40, className = '' }: { size?: number; className?: string }) => {
-  // Matches the specific logo image: White keycap with blue extrusion base + "control + a" text
+export const BrandLogo = ({ size = 40, className = '', hideText = false }: { size?: number; className?: string; hideText?: boolean }) => {
+  // Precision match to the provided image logo: 
+  // White keycap with sharp blue base extrusion + geometric sans-serif typography
   return (
-    <div className={`flex items-center gap-3 select-none ${className}`}>
+    <div className={`flex items-center gap-[0.7em] select-none ${className}`} style={{ fontSize: size }}>
+      {/* Keycap with solid blue base */}
       <div 
-        className="relative flex items-center justify-center bg-white border border-black/5"
+        className="relative flex items-center justify-center bg-white"
         style={{ 
-          width: size, 
-          height: size, 
-          borderRadius: size * 0.22,
-          background: 'linear-gradient(180deg, #FFFFFF 0%, #F8F9FA 100%)',
-          // Distinct solid blue extrusion to match logo + soft shadow
-          boxShadow: `0 ${size * 0.15}px 0 #0259DD, 0 ${size * 0.3}px ${size * 0.5}px -${size * 0.1}px rgba(2, 89, 221, 0.4), inset 0 -2px 3px rgba(0,0,0,0.05)`
+          width: '1em', 
+          height: '1em', 
+          borderRadius: '0.22em',
+          background: 'linear-gradient(180deg, #FFFFFF 0%, #FDFDFD 100%)',
+          border: '1px solid rgba(0,0,0,0.03)',
+          boxShadow: `0 0.12em 0 #0259DD, 0 0.25em 0.4em -0.05em rgba(2, 89, 221, 0.3), inset 0 -0.05em 0.05em rgba(0,0,0,0.05)`
         }}
       >
-        <span 
-          className="font-bold text-brand-heading tracking-tighter"
-          style={{ fontSize: size * 0.38 }}
-        >
-          ^A
-        </span>
+        <div className="flex flex-col items-center justify-center -mt-[0.05em]">
+          <span 
+            className="font-bold text-brand-heading/80 tracking-tighter"
+            style={{ fontSize: '0.36em', lineHeight: 1 }}
+          >
+            ^A
+          </span>
+        </div>
       </div>
       
-      <div className="flex items-center font-bold text-brand-heading tracking-tight" style={{ fontSize: size * 0.65, gap: size * 0.15 }}>
-        <span>control</span>
-        <span className="text-brand-blue">+</span>
-        <span>a</span>
-      </div>
+      {!hideText && (
+        <div className="flex items-center font-bold text-brand-heading tracking-tight" style={{ fontSize: '0.62em', gap: '0.25em' }}>
+          <span className="text-[#333333]">control</span>
+          <span className="text-brand-blue font-black">+</span>
+          <span className="text-[#333333]">a</span>
+        </div>
+      )}
     </div>
   );
 };
