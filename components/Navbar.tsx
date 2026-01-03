@@ -4,7 +4,11 @@ import { BrandLogo } from './Icons';
 import { motion } from 'framer-motion';
 import { ShimmerButton } from './ui/shimmer-button';
 
-export const Navbar: React.FC = () => {
+interface NavbarProps {
+  onBookCall?: () => void;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({ onBookCall }) => {
   const navLinks = [
     { name: 'The Problem', href: '#problem' },
     { name: 'Solutions', href: '#what-we-do' },
@@ -42,6 +46,7 @@ export const Navbar: React.FC = () => {
         {/* CTA Section */}
         <div className="ml-2">
           <ShimmerButton 
+            onClick={onBookCall}
             background="#0259DD"
             className="px-6 py-2.5 h-auto text-[13px] font-bold"
           >

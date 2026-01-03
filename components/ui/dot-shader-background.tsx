@@ -5,30 +5,13 @@ import { Canvas, ThreeEvent, useFrame, useThree } from '@react-three/fiber'
 import { shaderMaterial, useTrailTexture } from '@react-three/drei'
 import * as THREE from 'three'
 
+// Fix for missing intrinsic elements types by defining them as local constants with any casting
+const Mesh = 'mesh' as any;
+const PlaneGeometry = 'planeGeometry' as any;
+const Primitive = 'primitive' as any;
+
 // Mock useTheme since we don't have next-themes provider
 const useTheme = () => ({ theme: 'light' })
-
-// Extend React's JSX namespace to include Three.js elements
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      mesh: any
-      planeGeometry: any
-      primitive: any
-    }
-  }
-}
-
-// Extend global JSX namespace as well for compatibility
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      mesh: any
-      planeGeometry: any
-      primitive: any
-    }
-  }
-}
 
 const DotMaterial = shaderMaterial(
   {
@@ -185,10 +168,11 @@ function Scene() {
 
   const scale = Math.max(viewport.width, viewport.height) / 2
 
+  // Fixed intrinsic elements by using capitalized component variables
   return (
-    <mesh scale={[scale, scale, 1]} onPointerMove={handlePointerMove}>
-      <planeGeometry args={[2, 2]} />
-      <primitive
+    <Mesh scale={[scale, scale, 1]} onPointerMove={handlePointerMove}>
+      <PlaneGeometry args={[2, 2]} />
+      <Primitive
         object={dotMaterial}
         resolution={[size.width * viewport.dpr, size.height * viewport.dpr]}
         rotation={rotation}
@@ -196,7 +180,7 @@ function Scene() {
         mouseTrail={trail}
         render={0}
       />
-    </mesh>
+    </Mesh>
   )
 }
 
