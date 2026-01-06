@@ -422,7 +422,7 @@ const App: React.FC = () => {
                     {/* Brand Badge Placeholder from Screenshot Instruction */}
 
 
-                    <h1 className="text-5xl md:text-[7rem] leading-[0.9] md:leading-[0.8] font-black tracking-tighter text-white uppercase z-10 flex flex-col items-center mb-8">
+                    <h1 className="text-5xl md:text-6xl lg:text-[7rem] leading-[0.9] md:leading-[0.8] font-black tracking-tighter text-white uppercase z-10 flex flex-col items-center mb-8">
                       Systems that <br />just work.
                     </h1>
                     <p className="text-white/80 text-lg md:text-2xl max-w-4xl mx-auto mb-12 leading-snug font-medium">
@@ -462,7 +462,7 @@ const App: React.FC = () => {
                     Connecting the pieces that keep a business running.<br />
                     Quietly. Reliably. Intentionally.
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <Card variant="default" title="Automations" description="Reducing manual work where it slows things down." icon={<AutomationKeycap />} />
                     <Card variant="default" title="Visibility" description="Seeing what’s happening without chasing updates." icon={<DashboardKeycap />} />
                     <Card variant="default" title="Internal tools" description="Custom systems when off-the-shelf software isn’t enough." icon={<OpsKeycap />} />
@@ -549,7 +549,7 @@ const App: React.FC = () => {
               <div className="max-w-7xl mx-auto w-full">
                 <motion.div {...fadeIn} className="card-3d-white rounded-[64px] p-12 md:p-24 overflow-hidden">
                   <h2 className="text-5xl md:text-7xl font-bold text-brand-heading tracking-tighter mb-20 text-center">How it usually begins</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {deploySteps.map((step, i) => (
                       <AnimatedProcessCard key={step.id} step={step} index={i} />
                     ))}
