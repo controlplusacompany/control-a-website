@@ -19,6 +19,13 @@ export const CustomCursor: React.FC = () => {
     const cursorY = useSpring(mouseY, springConfig);
 
     useEffect(() => {
+        // Only enable custom cursor on devices with a fine pointer (mouse)
+        const mediaQuery = window.matchMedia('(pointer: fine)');
+        if (!mediaQuery.matches) {
+            setIsVisible(false);
+            return;
+        }
+
         const onMouseMove = (e: MouseEvent) => {
             mouseX.set(e.clientX);
             mouseY.set(e.clientY);
@@ -54,7 +61,7 @@ export const CustomCursor: React.FC = () => {
             window.removeEventListener('mouseup', onMouseUp);
             window.removeEventListener('mouseover', onMouseOver);
         };
-    }, [isVisible]);
+    }, [isVisible, mouseX, mouseY]); // Added dependencies for safety
 
     if (!isVisible) return null;
 
