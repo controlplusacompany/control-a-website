@@ -57,7 +57,7 @@ export const KeycapIcon: React.FC<KeycapProps> = ({
   );
 };
 
-export const BrandLogo = ({ size = 40, className = '', containerHeight }: { size?: number; className?: string; containerHeight?: number }) => {
+export const BrandLogo = ({ size = 40, className = '', containerHeight, leftPos }: { size?: number; className?: string; containerHeight?: number; leftPos?: string }) => {
   return (
     <div
       className={`flex items-center justify-center select-none relative ${className}`}
@@ -71,7 +71,7 @@ export const BrandLogo = ({ size = 40, className = '', containerHeight }: { size
           height: size,
           position: containerHeight ? 'absolute' : 'relative',
           top: containerHeight ? '50%' : 'auto',
-          left: containerHeight ? '50%' : 'auto',
+          left: containerHeight ? (leftPos || '50%') : 'auto',
           transform: containerHeight ? 'translate(-50%, -50%)' : 'none',
           pointerEvents: 'none'
         }}
@@ -207,4 +207,18 @@ export const PredictabilityKeycap = ({ size = 56 }) => (
       </svg>
     }
   />
+);
+export const MenuIcon = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="3" y1="12" x2="21" y2="12"></line>
+    <line x1="3" y1="6" x2="21" y2="6"></line>
+    <line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+);
+
+export const XIcon = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
 );

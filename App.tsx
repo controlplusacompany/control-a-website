@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import Lenis from 'lenis';
 import { motion, useScroll, useSpring, useTransform, AnimatePresence } from 'framer-motion';
 import { Navbar } from './components/Navbar';
 import { Card } from './components/Card';
-import { PulseBeams } from './components/ui/pulse-beams';
+import { BackgroundGradient } from './components/BackgroundGradient';
+import { Footer } from './components/Footer';
 import { ShimmerButton } from './components/ui/shimmer-button';
 import { CustomCursor } from './components/ui/custom-cursor';
 import { BookingPage } from './components/BookingPage';
@@ -269,6 +269,11 @@ const App: React.FC = () => {
       lenis.destroy();
     };
   }, []);
+
+  // Scroll to top whenever view changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [view]);
   const { scrollYProgress } = useScroll();
 
   const scaleX = useSpring(scrollYProgress, {
@@ -406,24 +411,23 @@ const App: React.FC = () => {
 
             {/* HERO */}
             <section className="px-6 md:px-12 relative overflow-hidden">
-              <div className="max-w-7xl mx-auto w-full relative z-20">
+              <div className="max-w-6xl mx-auto w-full relative z-20">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.98, y: 30 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-                  className="card-3d-green rounded-[64px] p-10 md:p-32 text-center relative shadow-3xl group min-h-[80vh] flex flex-col justify-center"
+                  className="card-3d-green rounded-[64px] p-10 md:p-24 text-center relative shadow-3xl group min-h-[75vh] flex flex-col justify-center"
                 >
                   <div className="flex flex-col items-center">
                     {/* Brand Badge Placeholder from Screenshot Instruction */}
 
 
-                    <h1 className="text-7xl md:text-[9rem] font-bold text-white mb-10 tracking-tighter leading-[0.9]">
+                    <h1 className="text-5xl md:text-[7rem] leading-[0.9] md:leading-[0.8] font-black tracking-tighter text-white uppercase z-10 flex flex-col items-center mb-8">
                       Systems that <br />just work.
                     </h1>
-                    <p className="text-white/80 text-xl md:text-3xl max-w-5xl mx-auto mb-12 leading-snug font-medium">
-                      Workflows, automations, tools, and integrations that help businesses run smoothly.
+                    <p className="text-white/80 text-lg md:text-2xl max-w-4xl mx-auto mb-12 leading-snug font-medium">
+                      Workflows, automations, tools, and integrations <br /> that help businesses run smoothly.
                     </p>
-                    <div className="text-white/40 font-black text-[12px] uppercase tracking-[0.5em] mb-14">Less chaos. More clarity.</div>
 
                     <motion.div
                       className="flex flex-col items-center gap-6"
@@ -434,12 +438,12 @@ const App: React.FC = () => {
                       <ShimmerButton
                         onClick={() => setView('booking')}
                         background="#0259DD"
-                        className="h-20 px-12 rounded-full font-bold text-xl flex items-center gap-4 border border-white/30 shadow-2xl"
+                        className="h-16 px-10 rounded-full font-bold text-lg flex items-center gap-4 border border-white/30 shadow-2xl"
                       >
-                        Book a clarity call
-                        <ArrowKeycap size={24} />
+                        Connect with us
+                        <ArrowKeycap size={22} />
                       </ShimmerButton>
-                      <span className="text-white/40 font-bold text-sm uppercase tracking-widest">No pressure. Just clarity.</span>
+                      <span className="text-white/40 font-bold text-xs uppercase tracking-widest">No pressure. Just clarity.</span>
                     </motion.div>
                   </div>
                 </motion.div>
@@ -572,7 +576,7 @@ const App: React.FC = () => {
                       background="#0259DD"
                       className="h-[72px] px-16 rounded-full font-bold text-xl flex items-center gap-4 border border-white/30 shadow-2xl"
                     >
-                      Book a clarity call
+                      Connect with us
                       <ArrowKeycap size={24} />
                     </ShimmerButton>
                     <div className="text-white/40 font-black text-[11px] uppercase tracking-[0.4em] mt-8">Free to explore. No obligation.</div>
@@ -582,36 +586,9 @@ const App: React.FC = () => {
             </section>
 
             {/* REFINED FOOTER */}
-            <footer className="py-24 px-6 md:px-12">
-              <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-start gap-12">
-                {/* Left Column */}
-                <div className="flex flex-col items-start gap-4">
-                  <div className="flex items-center space-x-4 opacity-80">
-                    <BrandLogo size={36} />
-                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-brand-muted pt-1">Everything connected. Running smoothly.</span>
-                  </div>
-                  <p className="text-brand-muted/40 font-bold text-[10px] uppercase tracking-[0.3em] pl-1">© 2024 Systems Design</p>
-                </div>
-
-                {/* Right Column: About Us / Contact */}
-                <div className="flex flex-col md:flex-row gap-12 md:gap-24">
-                  <div className="space-y-4">
-                    <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-brand-heading">Contact</h4>
-                    <div className="flex flex-col gap-2 text-[13px] font-bold text-brand-muted">
-                      <a href="mailto:hello@controla.agency" className="hover:text-brand-blue transition-colors">hello@controla.agency</a>
-                      <span>+1 (555) 123-4567</span>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h4 className="text-[11px] font-black uppercase tracking-[0.3em] text-brand-heading">Location</h4>
-                    <div className="flex flex-col gap-2 text-[13px] font-bold text-brand-muted">
-                      <span>123 Systems Lane</span>
-                      <span>Tech Valley, CA 94043</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </footer>
+            {/* REFINED FOOTER */}
+            {/* REFINED FOOTER */}
+            <Footer />
           </motion.div>
         ) : (
           <motion.div key="booking" {...pageTransition}>
@@ -619,7 +596,7 @@ const App: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </div >
   );
 };
 

@@ -1,6 +1,7 @@
-
 import React from 'react';
-import { motion } from 'framer-motion';
+import { BackgroundGradient } from './BackgroundGradient';
+import { Footer } from './Footer';
+import { motion, AnimatePresence } from 'framer-motion';
 import { KeycapIcon, ArrowKeycap, BrandLogo } from './Icons';
 import { ShimmerButton } from './ui/shimmer-button';
 
@@ -219,7 +220,7 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
                 A calm, practical <br /> conversation.
               </h1>
               <p className="text-white/80 text-lg md:text-xl max-w-xl mx-auto font-medium leading-relaxed">
-                This isn't a sales pitch. We'll understand how your business works today, where friction exists, and whether a simple system could help.
+                We'll understand how your business works today, where friction exists, and whether a simple system could help.
               </p>
             </motion.div>
 
@@ -230,9 +231,13 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
               transition={{ delay: 0.1 }}
               className=""
             >
-              <div className="text-left mb-8 pl-4">
+              {/* Footer Logo - Matching Navbar Size */}
+
+
+              <div className="text-left mb-8 pl-4 hidden">
                 <span className="text-[11px] font-black uppercase tracking-[0.4em] text-brand-muted">How this works?</span>
               </div>
+
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {objectives.map((obj, i) => (
@@ -244,9 +249,6 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
                       {obj.visual}
                     </div>
                     <div className="space-y-2">
-                      <div className="flex items-center gap-2 opacity-60">
-                        <KeycapIcon label={obj.id} size={20} blueDepth={false} />
-                      </div>
                       <h3 className="text-base font-bold text-brand-heading leading-tight">{obj.title}</h3>
                     </div>
                   </div>
@@ -260,7 +262,7 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-brand-blue/5 rounded-[64px] p-4 md:p-10 relative shadow-2xl backdrop-blur-xl border border-brand-blue/10 h-full"
+            className="h-full"
           >
             {status === 'success' ? (
               <div className="bg-white rounded-[56px] p-8 md:p-12 shadow-elevation border border-white h-full flex flex-col items-center justify-center text-center space-y-6">
@@ -284,7 +286,7 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
               <form onSubmit={handleSubmit} className="bg-white rounded-[56px] p-8 md:p-12 shadow-elevation border border-white h-full flex flex-col">
                 <div className="space-y-8 flex-1">
                   <div className="space-y-3">
-                    <label className="text-xs font-black uppercase tracking-widest text-brand-muted px-4">Name</label>
+                    <label className="text-xs font-black uppercase tracking-widest text-brand-muted px-4">Name <span className="text-red-500">*</span></label>
                     <input
                       type="text"
                       name="name"
@@ -292,11 +294,11 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Your full name"
-                      className="w-full h-16 bg-brand-bg/50 border border-brand-border rounded-3xl px-6 font-bold text-lg text-brand-heading placeholder:text-brand-muted/40 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/40 outline-none transition-all"
+                      className="w-full h-16 bg-white border border-brand-border rounded-3xl px-6 font-bold text-lg text-black placeholder:text-brand-muted/40 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/40 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-3">
-                    <label className="text-xs font-black uppercase tracking-widest text-brand-muted px-4">Email</label>
+                    <label className="text-xs font-black uppercase tracking-widest text-brand-muted px-4">Email <span className="text-red-500">*</span></label>
                     <input
                       type="email"
                       name="email"
@@ -304,7 +306,7 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="email@company.com"
-                      className="w-full h-16 bg-brand-bg/50 border border-brand-border rounded-3xl px-6 font-bold text-lg text-brand-heading placeholder:text-brand-muted/40 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/40 outline-none transition-all"
+                      className="w-full h-16 bg-white border border-brand-border rounded-3xl px-6 font-bold text-lg text-black placeholder:text-brand-muted/40 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/40 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-3">
@@ -315,7 +317,7 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="+1 (555) 000-0000"
-                      className="w-full h-16 bg-brand-bg/50 border border-brand-border rounded-3xl px-6 font-bold text-lg text-brand-heading placeholder:text-brand-muted/40 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/40 outline-none transition-all"
+                      className="w-full h-16 bg-white border border-brand-border rounded-3xl px-6 font-bold text-lg text-black placeholder:text-brand-muted/40 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/40 outline-none transition-all"
                     />
                   </div>
                   <div className="space-y-3">
@@ -326,7 +328,7 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
                       value={formData.company}
                       onChange={handleChange}
                       placeholder="company.com"
-                      className="w-full h-16 bg-brand-bg/50 border border-brand-border rounded-3xl px-6 font-bold text-lg text-brand-heading placeholder:text-brand-muted/40 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/40 outline-none transition-all"
+                      className="w-full h-16 bg-white border border-brand-border rounded-3xl px-6 font-bold text-lg text-black placeholder:text-brand-muted/40 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/40 outline-none transition-all"
                     />
                   </div>
 
@@ -338,7 +340,7 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
                       value={formData.notes}
                       onChange={handleChange}
                       placeholder="Tell us a bit about your current operations..."
-                      className="w-full bg-brand-bg/50 border border-brand-border rounded-3xl p-6 font-bold text-lg text-brand-heading placeholder:text-brand-muted/40 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/40 outline-none transition-all resize-none"
+                      className="w-full bg-white border border-brand-border rounded-3xl p-6 font-bold text-lg text-black placeholder:text-brand-muted/40 focus:ring-2 focus:ring-brand-blue/20 focus:border-brand-blue/40 outline-none transition-all resize-none"
                     />
                   </div>
                 </div>
@@ -355,7 +357,7 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
                       }}
                       type="submit"
                     >
-                      {status === 'sending' ? 'Sending...' : 'Confirm call'}
+                      {status === 'sending' ? 'Sending...' : 'Send Inquiry'}
                       {status !== 'sending' && <ArrowKeycap size={24} />}
                     </ShimmerButton>
                     <div className="flex items-center gap-2 text-[12px] text-brand-muted/70 font-bold uppercase tracking-wider">
@@ -373,20 +375,9 @@ export const BookingPage: React.FC<BookingPageProps> = ({ onBack }) => {
         </div>
       </div>
 
-      {/* Booking Footer - Consistent with brand aesthetics */}
-      <footer className="mt-auto bg-[#111] text-white/40 py-24 px-8 border-t border-white/5">
-        <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row justify-between items-center gap-12">
-          <div className="flex flex-col items-center md:items-start gap-6">
-            <BrandLogo size={36} className="grayscale brightness-[100] opacity-50" />
-            <div className="text-[11px] font-black uppercase tracking-[0.4em] opacity-30">Operational Clarity Engineered</div>
-          </div>
-          <div className="text-center md:text-right space-y-2">
-            <p className="text-white font-bold text-lg hover:text-brand-blue transition-colors cursor-pointer tracking-tight">hello@controla.agency</p>
-            <p className="text-white/60 font-medium">Strategic Design HQ</p>
-            <p className="text-white/30 text-xs font-bold uppercase tracking-widest mt-4">© 2024 Control + A Systems</p>
-          </div>
-        </div>
-      </footer>
+      {/* REFINED FOOTER - Consistent with App.tsx */}
+      {/* REFINED FOOTER - Consistent with App.tsx */}
+      <Footer className="bg-white/50 border-t border-brand-border/20" />
     </div>
   );
 };
