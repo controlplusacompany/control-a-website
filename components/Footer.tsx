@@ -40,12 +40,7 @@ export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="space-y-4">
-                        <h4 className="text-xs font-black uppercase tracking-[0.3em] text-brand-heading">Location</h4>
-                        <div className="flex flex-col gap-2 text-sm font-bold text-brand-muted">
-                            <span>Faridabad, Haryana, IN</span>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </footer>
