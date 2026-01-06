@@ -44,34 +44,52 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookCall, onLogoClick, hideLin
           </div>
 
           {/* Links Section - Desktop */}
-          {!hideLinks && (
-            <div className="hidden md:flex items-center">
-              {navLinks.map((link) => (
-                <motion.a
-                  key={link.name}
-                  href={link.href}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 text-[13px] font-bold text-brand-body hover:text-brand-heading hover:bg-black/5 rounded-full transition-colors"
-                  onClick={handleLinkClick}
-                >
-                  {link.name}
-                </motion.a>
-              ))}
-            </div>
-          )}
+          <AnimatePresence mode="popLayout">
+            {!hideLinks && (
+              <motion.div
+                initial={{ opacity: 0, width: 0, scale: 0.95 }}
+                animate={{ opacity: 1, width: 'auto', scale: 1 }}
+                exit={{ opacity: 0, width: 0, scale: 0.95 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="hidden md:flex items-center overflow-hidden"
+              >
+                <div className="flex items-center">
+                  {navLinks.map((link) => (
+                    <motion.a
+                      key={link.name}
+                      href={link.href}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-4 py-2 text-[13px] font-bold text-brand-body hover:text-brand-heading hover:bg-black/5 rounded-full transition-colors whitespace-nowrap"
+                      onClick={handleLinkClick}
+                    >
+                      {link.name}
+                    </motion.a>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Mobile Menu Toggle */}
-          {!hideLinks && (
-            <div className="flex md:hidden px-2">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="p-2 text-brand-heading hover:bg-black/5 rounded-full transition-colors"
+          <AnimatePresence mode="popLayout">
+            {!hideLinks && (
+              <motion.div
+                initial={{ opacity: 0, width: 0, scale: 0.95 }}
+                animate={{ opacity: 1, width: 'auto', scale: 1 }}
+                exit={{ opacity: 0, width: 0, scale: 0.95 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="flex md:hidden px-2 overflow-hidden"
               >
-                {isOpen ? <XIcon size={24} /> : <MenuIcon size={24} />}
-              </button>
-            </div>
-          )}
+                <button
+                  onClick={() => setIsOpen(!isOpen)}
+                  className="p-2 text-brand-heading hover:bg-black/5 rounded-full transition-colors"
+                >
+                  {isOpen ? <XIcon size={24} /> : <MenuIcon size={24} />}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* CTA Section - Desktop */}
           <div className="ml-2 hidden md:block">
