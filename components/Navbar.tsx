@@ -7,9 +7,10 @@ import { ShimmerButton } from './ui/shimmer-button';
 interface NavbarProps {
   onBookCall?: () => void;
   onLogoClick?: () => void;
+  hideLinks?: boolean;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onBookCall, onLogoClick }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onBookCall, onLogoClick, hideLinks = false }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const navLinks = [
@@ -43,30 +44,34 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookCall, onLogoClick }) => {
           </div>
 
           {/* Links Section - Desktop */}
-          <div className="hidden md:flex items-center">
-            {navLinks.map((link) => (
-              <motion.a
-                key={link.name}
-                href={link.href}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 text-[13px] font-bold text-brand-body hover:text-brand-heading hover:bg-black/5 rounded-full transition-colors"
-                onClick={handleLinkClick}
-              >
-                {link.name}
-              </motion.a>
-            ))}
-          </div>
+          {!hideLinks && (
+            <div className="hidden md:flex items-center">
+              {navLinks.map((link) => (
+                <motion.a
+                  key={link.name}
+                  href={link.href}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-4 py-2 text-[13px] font-bold text-brand-body hover:text-brand-heading hover:bg-black/5 rounded-full transition-colors"
+                  onClick={handleLinkClick}
+                >
+                  {link.name}
+                </motion.a>
+              ))}
+            </div>
+          )}
 
           {/* Mobile Menu Toggle */}
-          <div className="flex md:hidden px-2">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-brand-heading hover:bg-black/5 rounded-full transition-colors"
-            >
-              {isOpen ? <XIcon size={24} /> : <MenuIcon size={24} />}
-            </button>
-          </div>
+          {!hideLinks && (
+            <div className="flex md:hidden px-2">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 text-brand-heading hover:bg-black/5 rounded-full transition-colors"
+              >
+                {isOpen ? <XIcon size={24} /> : <MenuIcon size={24} />}
+              </button>
+            </div>
+          )}
 
           {/* CTA Section - Desktop */}
           <div className="ml-2 hidden md:block">
@@ -83,7 +88,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onBookCall, onLogoClick }) => {
 
       {/* Mobile Menu Overlay */}
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && !hideLinks && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}

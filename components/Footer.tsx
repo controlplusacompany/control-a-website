@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrandLogo } from './Icons';
+import { BrandLogo, LinkedInIcon, InstagramIcon, XIconTwitter } from './Icons';
 
 interface FooterProps {
     className?: string;
@@ -24,6 +24,20 @@ export const Footer: React.FC<FooterProps> = ({ className = '' }) => {
                         <h4 className="text-xs font-black uppercase tracking-[0.3em] text-brand-heading">Contact</h4>
                         <div className="flex flex-col gap-2 text-sm font-bold text-brand-muted">
                             <a href="mailto:team@bycontrolplusa.co.in" className="hover:text-brand-blue transition-colors">team@bycontrolplusa.co.in</a>
+                            <div className="flex flex-row flex-wrap gap-4 pt-4 text-xs opacity-80">
+                                <a href="https://www.linkedin.com/company/bycontrolplusa/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-brand-blue transition-colors group">
+                                    <LinkedInIcon size={16} />
+                                    <span>/bycontrolplusa</span>
+                                </a>
+                                <a href="https://www.instagram.com/bycontrolplusa/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-brand-blue transition-colors group">
+                                    <InstagramIcon size={16} />
+                                    <span>/bycontrolplusa</span>
+                                </a>
+                                <a href="https://x.com/bycontrolplusa" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-brand-blue transition-colors group">
+                                    <XIconTwitter size={14} />
+                                    <span>/bycontrolplusa</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <div className="space-y-4">

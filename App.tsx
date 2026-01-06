@@ -398,11 +398,18 @@ const App: React.FC = () => {
       </AnimatePresence>
 
       <Navbar
-        onBookCall={() => setView('booking')}
+        onBookCall={() => {
+          if (view === 'booking') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            setView('booking');
+          }
+        }}
         onLogoClick={() => {
           setView('home');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
+        hideLinks={view === 'booking'}
       />
 
       <AnimatePresence mode="wait">
