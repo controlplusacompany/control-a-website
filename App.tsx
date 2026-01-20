@@ -6,7 +6,7 @@ import { Card } from './components/Card';
 import { BackgroundGradient } from './components/BackgroundGradient';
 import { Footer } from './components/Footer';
 import { ShimmerButton } from './components/ui/shimmer-button';
-import { CustomCursor } from './components/ui/custom-cursor';
+
 import { BookingPage } from './components/BookingPage';
 import {
   KeycapIcon,
@@ -379,7 +379,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-brand-bg selection:bg-brand-green selection:text-white overflow-x-hidden">
-      <CustomCursor />
+
 
       <AnimatePresence>
         {view === 'home' && (
